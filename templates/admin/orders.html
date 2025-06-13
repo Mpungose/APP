@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block title %}Manage Orders - Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-4">Manage Orders</h1>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td>#{{ order.id }}</td>
+              <td>{{ order.user.username }}</td>
+              <td>
+                {% for item in order.items %}
+                <small
+                  >{{ item.book.title }}{% if not loop.last %}, {% endif
+                  %}</small
+                >
+                {% endfor %}
+              </td>
+              <td>R{{ "%.2f"|format(order.total_amount) }}</td>
+              <td>
+                <span
+                  class="badge bg-{{ 'success' if order.status == 'Completed' else 'warning' }}"
+                >
+                  {{ order.status }}
+                </span>
+              </td>
+              <td>{{ order.created_at.strftime('%m/%d/%Y %I:%M %p') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

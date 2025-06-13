@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Book - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Edit Book</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" name="title" value="{{ book.title }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Author</label>
+                                <input type="text" class="form-control" name="author" value="{{ book.author }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Condition</label>
+                                <select class="form-select" name="condition" required>
+                                    <option value="New" {% if book.condition == 'New' %}selected{% endif %}>New</option>
+                                    <option value="Like New" {% if book.condition == 'Like New' %}selected{% endif %}>Like New</option>
+                                    <option value="Used" {% if book.condition == 'Used' %}selected{% endif %}>Used</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Price</label>
+                                <input type="number" class="form-control" name="price" step="0.01" min="0" 
+                                       value="{{ book.price }}" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Category</label>
+                                <input type="text" class="form-control" name="category" value="{{ book.category }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="4" required>{{ book.description }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Image URL</label>
+                            <input type="url" class="form-control" name="image_url" value="{{ book.image_url }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_available" 
+                                       {% if book.is_available %}checked{% endif %}>
+                                <label class="form-check-label">Available for sale</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('admin.books') }}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Book</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}FundaHub - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-3">Find Your Perfect Textbook</h1>
+                <p class="lead mb-4">Sustainable and affordable marketplace for university students to buy and sell textbooks.</p>
+                <a href="{{ url_for('main.books') }}" class="btn btn-light btn-lg">Browse Books</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg" 
+                     alt="Books" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <form method="GET" action="{{ url_for('main.index') }}" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="search" placeholder="Search books..." 
+                       value="{{ current_search }}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="category">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if category == current_category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-1"></i>Search
+                </button>
+            </div>
+            <div class="col-md-3">
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary w-100">Clear</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Featured Books -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            {% if current_search or current_category %}
+                Search Results
+            {% else %}
+                Featured Books
+            {% endif %}
+        </h2>
+        
+        {% if books %}
+            <div class="row">
+                {% for book in books %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="card h-100 shadow-sm book-card">
+                            <img src="{{ book.image_url }}" class="card-img-top book-image" alt="{{ book.title }}">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text text-muted">by {{ book.author }}</p>
+                                <p class="card-text">
+                                    <span class="badge bg-secondary">{{ book.category }}</span>
+                                    <span class="badge bg-info">{{ book.condition }}</span>
+                                </p>
+                                <p class="card-text flex-grow-1">{{ book.description[:100] }}...</p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="text-primary mb-0">R{{ "%.2f"|format(book.price) }}</h5>
+                                        <div class="btn-group">
+                                            <a href="{{ url_for('main.book_detail', book_id=book.id) }}" 
+                                               class="btn btn-outline-primary btn-sm">View</a>
+                                            {% if session.user_id %}
+                                                <a href="{{ url_for('cart.add', book_id=book.id) }}" 
+                                                   class="btn btn-primary btn-sm">Add to Cart</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>No books found</h4>
+                <p class="text-muted">Try adjusting your search criteria or browse all books.</p>
+                <a href="{{ url_for('main.books') }}" class="btn btn-primary">Browse All Books</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose FundaHub?</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <i class="fas fa-dollar-sign fa-3x text-primary mb-3"></i>
+                <h4>Affordable Prices</h4>
+                <p>Save money on textbooks with our competitive pricing from fellow students.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <i class="fas fa-recycle fa-3x text-success mb-3"></i>
+                <h4>Sustainable</h4>
+                <p>Reduce waste by giving textbooks a second life through our marketplace.</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <i class="fas fa-users fa-3x text-info mb-3"></i>
+                <h4>Student Community</h4>
+                <p>Connect with fellow students and build a supportive academic community.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

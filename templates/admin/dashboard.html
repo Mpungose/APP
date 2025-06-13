@@ -1,0 +1,158 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard - FundaHub{% endblock
+%} {% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Admin Dashboard</h1>
+    <span class="badge bg-primary">Administrator</span>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-5">
+    <div class="col-md-3 mb-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h4>{{ stats.total_users }}</h4>
+              <p class="mb-0">Total Users</p>
+            </div>
+            <i class="fas fa-users fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h4>{{ stats.total_books }}</h4>
+              <p class="mb-0">Total Books</p>
+            </div>
+            <i class="fas fa-book fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h4>{{ stats.available_books }}</h4>
+              <p class="mb-0">Available Books</p>
+            </div>
+            <i class="fas fa-check-circle fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h4>{{ stats.total_orders }}</h4>
+              <p class="mb-0">Total Orders</p>
+            </div>
+            <i class="fas fa-shopping-cart fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <h3>Quick Actions</h3>
+      <div class="btn-group" role="group">
+        <a href="{{ url_for('admin.add_book') }}" class="btn btn-primary">
+          <i class="fas fa-plus me-1"></i>Add New Book
+        </a>
+        <a href="{{ url_for('admin.books') }}" class="btn btn-outline-primary">
+          <i class="fas fa-book me-1"></i>Manage Books
+        </a>
+        <a href="{{ url_for('admin.users') }}" class="btn btn-outline-primary">
+          <i class="fas fa-users me-1"></i>Manage Users
+        </a>
+        <a href="{{ url_for('admin.orders') }}" class="btn btn-outline-primary">
+          <i class="fas fa-shopping-cart me-1"></i>View Orders
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Recent Orders</h5>
+        </div>
+        <div class="card-body">
+          {% if recent_orders %} {% for order in recent_orders %}
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <strong>Order #{{ order.id }}</strong><br />
+              <small class="text-muted"
+                >{{ order.user.username }} • {{
+                order.created_at.strftime('%m/%d/%Y') }}</small
+              >
+            </div>
+            <div class="text-end">
+              <span
+                class="badge bg-{{ 'success' if order.status == 'Completed' else 'warning' }}"
+              >
+                {{ order.status }} </span
+              ><br />
+              <small>R{{ "%.2f"|format(order.total_amount) }}</small>
+            </div>
+          </div>
+          {% if not loop.last %}
+          <hr class="my-2" />
+          {% endif %} {% endfor %} {% else %}
+          <p class="text-muted">No recent orders</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Recent Books</h5>
+        </div>
+        <div class="card-body">
+          {% if recent_books %} {% for book in recent_books %}
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <strong>{{ book.title }}</strong><br />
+              <small class="text-muted"
+                >{{ book.author }} • {{ book.created_at.strftime('%m/%d/%Y')
+                }}</small
+              >
+            </div>
+            <div class="text-end">
+              <span
+                class="badge bg-{{ 'success' if book.is_available else 'danger' }}"
+              >
+                {{ 'Available' if book.is_available else 'Sold' }} </span
+              ><br />
+              <small>R{{ "%.2f"|format(book.price) }}</small>
+            </div>
+          </div>
+          {% if not loop.last %}
+          <hr class="my-2" />
+          {% endif %} {% endfor %} {% else %}
+          <p class="text-muted">No recent books</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
